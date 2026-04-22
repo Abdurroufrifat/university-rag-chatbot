@@ -55,8 +55,8 @@ Rules:
         )
         return response.choices[0].message.content
 
-    except Exception:
-        return build_fallback_answer(retrieved_docs)
+    except Exception as e:
+        return build_fallback_answer(retrieved_docs) + f"\n\nAPI Error: {str(e)}"
 
 def build_fallback_answer(retrieved_docs):
     lines = []
