@@ -1,14 +1,21 @@
 import os
 from dotenv import load_dotenv
-import streamlit as st
 from openai import OpenAI
 
 load_dotenv()
 
 def get_secret(name, default=None):
-    if name in st.secrets:
-        return st.secrets[name]
-    return os.getenv(name, default)
+    # 1. Try normal environment variables first (.env for local use)
+    value = os.getenv(name)
+    if value is not None:
+        return value
+
+    # 2. Try Streamlit secrets only if available
+    try:
+        import streamlit as st
+        return st.secrets.get(name, default)
+    except Exception:
+        return default
 
 API_KEY = get_secret("OPENAI_API_KEY")
 BASE_URL = get_secret("OPENAI_BASE_URL", "https://api.qnaigc.com/v1")
@@ -40,7 +47,6 @@ def generate_answer(question, retrieved_docs, language_mode="Auto"):
     if not retrieved_docs:
         return "I could not find this information in the university documents or website."
 
-    # Use top 3 from retrieved docs for final answer generation
     top_docs = retrieved_docs[:3]
 
     context = "\n\n".join([
