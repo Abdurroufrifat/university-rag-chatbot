@@ -1,0 +1,12 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.streamlit/
+
+# Optional: ignore big local files if needed
+# data/processed/
